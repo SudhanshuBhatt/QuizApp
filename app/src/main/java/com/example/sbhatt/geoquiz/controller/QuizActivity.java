@@ -25,6 +25,7 @@ public class QuizActivity extends ActionBarActivity {
     private TextView mQuestionView;
     private TrueFalse trueFalseObj;
     private ArrayList<TrueFalse> mQuestionBankList;
+    private int mCurrentQuestionIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,15 @@ public class QuizActivity extends ActionBarActivity {
         mTrueBtn = (Button)findViewById(R.id.trueBtn);
         mFalseBtn = (Button)findViewById(R.id.falseBtn);
         mNextQtnBtn = (Button)findViewById(R.id.nextQuestnBtn);
-        mQuestionView = (Button)findViewById(R.id.questionView);
+        mQuestionView = (TextView)findViewById(R.id.questionView);
+
+        // Create Questions and add them to TrueFalse QuestionBank
+        trueFalseObj = new TrueFalse();
+        mQuestionBankList = new ArrayList<TrueFalse>();
+        mQuestionBankList = trueFalseObj.createQuestionBank(mQuestionBankList);
+
+        // Set first question on the screen
+        fetchNewQuestion(mCurrentQuestionIndex);
 
         // Set OnClickListener for True button
         mTrueBtn.setOnClickListener(new View.OnClickListener() {
@@ -57,22 +66,26 @@ public class QuizActivity extends ActionBarActivity {
         mNextQtnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fetchNewQuestion(mCurrentQuestionIndex);
 
             }
         });
+    }
 
-        // Get Questions from QuestionBank
-        trueFalseObj = new TrueFalse();
-        mQuestionBankList = trueFalseObj.createQuestionBank(mQuestionBankList);
-
-        // Create a ListIterator to move over the questions array list
-        ListIterator questionIterator = mQuestionBankList.listIterator();
-        if(questionIterator.hasNext())
+    private void fetchNewQuestion(int mCurrentQuestionIndex) {
+        if(mCurrentQuestionIndex < mQuestionBankList.size()-1)
         {
-            int questionId = questionIterator.next().getQuestion();
+            // Increasing the index to point to next question
+            this.mCurrentQuestionIndex = mCurrentQuestionIndex+1;
+            int questionId = mQuestionBankList.get(this.mCurrentQuestionIndex).getQuestion();
+            // Setting the TextView with updated question
+            mQuestionView.setText(questionId);
         }
+    }
 
+    private boolean checkAnswer(boolean a) {
 
+        return false;
     }
 
     @Override
