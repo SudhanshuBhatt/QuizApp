@@ -10,7 +10,12 @@
     <string name="question_africa">The source of the Nile River is in Egypt.</string>
     <string name="question_americas">The Amazon River is the longest river in the Americas.</string>
     <string name="question_asia">Lake Baikal is the world\'s oldest and deepest freshwater lake.</string>
-    <string name="true_pressed_toast">True Button was pressed.</string>
-    <string name="false_pressed_toast">False Button was pressed.</string>
+    <string name="true_pressed_toast">You answer is correct.</string>
+    <string name="false_pressed_toast">Your answer is incorrect.</string>
     <string name="next_qtn_btn">Next Question</string>
+    <string name="prev_qtn_btn">Previous Question</string>
+    <string name="first_questn">This is the first question. Can\'t go back anymore</string>
+    <string name="last_questn">This is the last question. Can\'t go ahead anymore</string>
+    <string name="next_content_desc">This button will take to the next question</string>
+    <string name="prev_content_desc">This button will take to the previous question</string>
 </resources>
