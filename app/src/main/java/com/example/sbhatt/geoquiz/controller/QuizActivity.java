@@ -29,8 +29,8 @@ public class QuizActivity extends ActionBarActivity {
     private TrueFalse trueFalseObj;
     private ArrayList<TrueFalse> mQuestionBankList;
     private int mCurrentQuestionIndex = -1;
-    public static final String TAG = "QuizActivity";
-
+    private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +51,12 @@ public class QuizActivity extends ActionBarActivity {
         mQuestionBankList = new ArrayList<TrueFalse>();
         mQuestionBankList = trueFalseObj.createQuestionBank(mQuestionBankList);
 
+        // Fetching the current index for question from bundle if exists
+        if(savedInstanceState!= null)
+            mCurrentQuestionIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         // Set first question on the screen
+        if(mCurrentQuestionIndex == -1)
+            mCurrentQuestionIndex++;
         fetchNewQuestion(mCurrentQuestionIndex);
 
         // Set OnClickListener for True button
@@ -82,6 +87,8 @@ public class QuizActivity extends ActionBarActivity {
         mNextQtnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Increasing the index to point to next question
+                mCurrentQuestionIndex++;
                 fetchNewQuestion(mCurrentQuestionIndex);
 
             }
@@ -99,6 +106,8 @@ public class QuizActivity extends ActionBarActivity {
         mPrevQtnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Decreasing the global question index
+                mCurrentQuestionIndex--;
                 fetchLastQuestion(mCurrentQuestionIndex);
             }
         });
@@ -134,14 +143,19 @@ public class QuizActivity extends ActionBarActivity {
         Log.d(TAG,"onPause() called");
     }
 
+    @Override
+    public void onSaveInstanceState (Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        Log.d(TAG, "OnSavedInstance()");
+        savedState.putInt(KEY_INDEX,mCurrentQuestionIndex);
+    }
+
     private void fetchLastQuestion(int mCurrentQuestionIndex) {
         if(mCurrentQuestionIndex > 0)
         {
             int questionId = mQuestionBankList.get(mCurrentQuestionIndex-1).getQuestion();
             // Setting the previous question on Question View text box
             mQuestionView.setText(questionId);
-            //Decreasing the global question index
-            this.mCurrentQuestionIndex = mCurrentQuestionIndex - 1;
         }
         else{
             Toast.makeText(this,R.string.first_questn,Toast.LENGTH_SHORT).show();
@@ -150,10 +164,8 @@ public class QuizActivity extends ActionBarActivity {
     }
 
     private void fetchNewQuestion(int mCurrentQuestionIndex) {
-        if(mCurrentQuestionIndex < mQuestionBankList.size()-1)
+        if(mCurrentQuestionIndex <= mQuestionBankList.size()-1)
         {
-            // Increasing the index to point to next question
-            this.mCurrentQuestionIndex = mCurrentQuestionIndex+1;
             int questionId = mQuestionBankList.get(this.mCurrentQuestionIndex).getQuestion();
             // Setting the TextView with updated question
             mQuestionView.setText(questionId);
