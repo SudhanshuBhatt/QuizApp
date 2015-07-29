@@ -1,5 +1,6 @@
 package com.example.sbhatt.geoquiz.controller;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +16,6 @@ import com.example.sbhatt.geoquiz.R;
 import com.example.sbhatt.geoquiz.model.TrueFalse;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
-
 
 public class QuizActivity extends ActionBarActivity {
 
@@ -25,12 +23,14 @@ public class QuizActivity extends ActionBarActivity {
     private Button mFalseBtn;
     private ImageButton mNextQtnBtn;
     private ImageButton mPrevQtnBtn;
+    private Button mCheatBtn;
     private TextView mQuestionView;
     private TrueFalse trueFalseObj;
     private ArrayList<TrueFalse> mQuestionBankList;
     private int mCurrentQuestionIndex = -1;
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +45,7 @@ public class QuizActivity extends ActionBarActivity {
         mNextQtnBtn = (ImageButton)findViewById(R.id.nextQuestnBtn);
         mQuestionView = (TextView)findViewById(R.id.questionView);
         mPrevQtnBtn = (ImageButton)findViewById(R.id.previousQuestnBtn);
+        mCheatBtn = (Button) findViewById(R.id.cheat_btn);
 
         // Create Questions and add them to TrueFalse QuestionBank
         trueFalseObj = new TrueFalse();
@@ -109,6 +110,15 @@ public class QuizActivity extends ActionBarActivity {
                 //Decreasing the global question index
                 mCurrentQuestionIndex--;
                 fetchLastQuestion(mCurrentQuestionIndex);
+            }
+        });
+
+        // Set on click listener for the cheat button
+        mCheatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = new Intent(QuizActivity.this,CheatActivity.class);
+                startActivity(newIntent);
             }
         });
     }
