@@ -30,14 +30,18 @@ public class QuizActivity extends ActionBarActivity {
     private int mCurrentQuestionIndex = -1;
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private boolean mIsPlayerCheater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        // Logging that onCreate was clalled
+        // Logging that onCreate was called
         Log.d(TAG,"onCreate(Bundle) was called");
+
+        // Setting the player as non cheater in the beginning
+        mIsPlayerCheater = false;
 
         // Getting View Objects for buttons
         mTrueBtn = (Button)findViewById(R.id.trueBtn);
@@ -118,39 +122,18 @@ public class QuizActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent(QuizActivity.this,CheatActivity.class);
-                startActivity(newIntent);
+                newIntent.putExtra(CheatActivity.CORRECT_ANSWER,mQuestionBankList.get(mCurrentQuestionIndex).isQuestionAnswer());
+                startActivityForResult(newIntent, 0);
             }
         });
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG,"onStart() called");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG,"onResume() called");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG,"onStop() called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG,"onDestroy() called");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG,"onPause() called");
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null)
+            return;
+        else
+            mIsPlayerCheater = data.getBooleanExtra(CheatActivity.RESULT_SHOWN_USER_CHEATED,false);
     }
 
     @Override
@@ -186,10 +169,45 @@ public class QuizActivity extends ActionBarActivity {
 
     private boolean checkAnswer(boolean a) {
 
-        boolean answer = mQuestionBankList.get(this.mCurrentQuestionIndex).isQuestionAnswer();
-        if(a == answer)
-            return true;
+        if(mIsPlayerCheater)
+            Toast.makeText(this,R.string.judgment_toast,Toast.LENGTH_SHORT).show();
+        else
+        {
+            boolean answer = mQuestionBankList.get(this.mCurrentQuestionIndex).isQuestionAnswer();
+            if(a == answer)
+                return true;
+        }
         return false;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause() called");
     }
 
     @Override
