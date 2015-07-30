@@ -58,7 +58,10 @@ public class QuizActivity extends ActionBarActivity {
 
         // Fetching the current index for question from bundle if exists
         if(savedInstanceState!= null)
+        {
             mCurrentQuestionIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsPlayerCheater = savedInstanceState.getBoolean(CheatActivity.CHEATER_CAUGHT,false);
+        }
         // Set first question on the screen
         if(mCurrentQuestionIndex == -1)
             mCurrentQuestionIndex++;
@@ -140,7 +143,8 @@ public class QuizActivity extends ActionBarActivity {
     public void onSaveInstanceState (Bundle savedState) {
         super.onSaveInstanceState(savedState);
         Log.d(TAG, "OnSavedInstance()");
-        savedState.putInt(KEY_INDEX,mCurrentQuestionIndex);
+        savedState.putInt(KEY_INDEX, mCurrentQuestionIndex);
+        savedState.putBoolean(CheatActivity.CHEATER_CAUGHT, mIsPlayerCheater);
     }
 
     private void fetchLastQuestion(int mCurrentQuestionIndex) {

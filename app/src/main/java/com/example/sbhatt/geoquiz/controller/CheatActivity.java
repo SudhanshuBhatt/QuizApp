@@ -19,6 +19,8 @@ public class CheatActivity extends ActionBarActivity {
 
     public static final String CORRECT_ANSWER = "correct_answer";
     public static final String RESULT_SHOWN_USER_CHEATED = "result_shown";
+    public static final String CHEATER_CAUGHT = "caught_cheating";
+    private boolean mDidUserCheat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +31,28 @@ public class CheatActivity extends ActionBarActivity {
         mShowAnswerView = (TextView) findViewById(R.id.answer_text_view);
         mShowAnswerBtn = (Button) findViewById(R.id.show_answer_btn);
 
+        // Get the results of the current answer from QuizActivity
+        mCorrectAnswer = getIntent().getBooleanExtra(CORRECT_ANSWER,false);
+
         // If Show button was not called then setResult as false
-        checkIfAnswerShown(false);
+        if(savedInstanceState != null) {
+            mDidUserCheat = savedInstanceState.getBoolean(CHEATER_CAUGHT);
+            if(mDidUserCheat)
+            {
+                if(mCorrectAnswer)
+                    mShowAnswerView.setText(R.string.true_button);
+                else
+                    mShowAnswerView.setText(R.string.false_button);
+            }
+        }
+        checkIfAnswerShown(mDidUserCheat);
 
         // Setting an On Click listener to Show Answer button
         mShowAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkIfAnswerShown(true);
+                mDidUserCheat = true;
+                checkIfAnswerShown(mDidUserCheat);
                 if(mCorrectAnswer) {
                     mShowAnswerView.setText(R.string.true_button);
                 }
@@ -45,8 +61,13 @@ public class CheatActivity extends ActionBarActivity {
             }
         });
 
-        // Get the results of the current answer from QuizActivity
-        mCorrectAnswer = getIntent().getBooleanExtra(CORRECT_ANSWER,false);
+
+    }
+
+    @Override
+    public void onSaveInstanceState (Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        savedState.putBoolean(CHEATER_CAUGHT,mDidUserCheat);
     }
 
     @Override
